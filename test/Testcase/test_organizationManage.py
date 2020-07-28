@@ -56,4 +56,3 @@ class TestOrganizationManage:
             else:  # 否则只进行key-value校验
                 self.log.info("预期校验字段：{}的值为{}；接口返回值的key:{}的值为{}".format(key, expected[key], key, response[key]))
                 assert expected[key] == response[key]
-print('111111111111111111111111111111111111')
