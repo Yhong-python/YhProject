@@ -30,6 +30,8 @@ class TestOrganizationManage:
     def setup_class(self):
         pass
 
+
+
     @allure.severity("normal")
     @pytest.mark.parametrize("case,http,expected", data[1], ids=data[0])
     @allure.story("XX用例集合")
