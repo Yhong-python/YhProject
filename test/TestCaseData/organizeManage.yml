@@ -1,0 +1,60 @@
+
+tests1:
+- case: 验证响应中start和count与请求中的参数一致
+  http:
+    method: POST
+    path: /adminApi/pmsDepartment/companyList
+    headers:
+      User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36
+    data:
+      currentPage: 1
+      pageSize: 10
+      search: '{"name":""}'
+  expected:
+    response:
+      code: 200
+      #校验部分返回值，只校验返回的第一个数据
+#      part_verify:
+#        id: 1
+#        name: 奇治信息总公司
+#      $.page
+      $.page.list[0].id: 1
+      $.page.list[0].name: 奇治信息总公司
+    verifty:
+      sql: SELECT * FROM qp_itfin2.pms_department WHERE `name`='奇治信息总公司'; SELECT 2 * FROM qp_itfin2.pms_de2artment WH2ERE `nam22e`='奇治信息总公司'
+- case: 验证响应
+  http:
+    method: POST
+    path: /adminApi/pmsDepartment/companyList
+    headers:
+      User-Agent: null
+    data:
+      currentPage: 2
+      pageSize: 10
+      search: '{"name":""}'
+  expected:
+    response:
+      code: 200
+test2:
+  - case: 测试全局变量的取值
+    setup:
+    teardown:
+    http:
+      method: POST
+      path: /adminApi/pmsDepartment/companyList
+      headers:
+        User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36
+      data:
+        getdata: $COMPANY_LIST$
+        currentPage: 1
+        pageSize: 10
+        search: {"name":"dfghdf","list":[1,2,3,4,5]}
+        search2: '{"name":""}'
+
+    expected:
+      response:
+        code: 200
+        #校验部分返回值，只校验返回的第一个数据
+        part_verify:
+          id: 1
+          name: 奇治信息总公司

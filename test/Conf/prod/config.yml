@@ -1,0 +1,16 @@
+
+
+adminurl: http://atestfdv3.gold-cloud.com:82
+db_info:
+  dbhost:  61.130.9.155
+  dbport: 13306
+  dbuser: root
+  dbpwd: cJp35%Yf4=9U
+  dbname: qp_itfin2
+admin_userInfo:
+  adminuser: 19999999999
+  adminpwd: 999999
+web_userInfo:
+  weburl: http://testfdv3.gold-cloud.com:82
+  webuser: 19999999999
+  webpwd: 999999
