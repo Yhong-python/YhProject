@@ -30,8 +30,6 @@ class TestOrganizationManage:
     def setup_class(self):
         pass
 
-
-
     @allure.severity("normal")
     @pytest.mark.parametrize("case,http,expected", data[1], ids=data[0])
     @allure.story("XX用例集合")
@@ -58,3 +56,4 @@ class TestOrganizationManage:
             else:  # 否则只进行key-value校验
                 self.log.info("预期校验字段：{}的值为{}；接口返回值的key:{}的值为{}".format(key, expected[key], key, response[key]))
                 assert expected[key] == response[key]
+dfsd dsf sd sdf sd 
