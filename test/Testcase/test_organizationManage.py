@@ -28,7 +28,6 @@ class TestOrganizationManage:
     data = get_test_data('../TestCaseData/organizeManage.yml', "tests1")
 
     def setup_class(self):
-        # self.base = loginAdmin(usr=Config().adminuser, pwd=Config().adminpwd)  # 用同一个登录成功后的session
         pass
 
     @allure.severity("normal")
