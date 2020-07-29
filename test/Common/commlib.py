@@ -37,7 +37,7 @@ def get_test_data(test_data_path, test_node):
     return case, parameters
 
 
-class Convert:
+class GetReqData:
     def convert_value(self, value):
         """
         :param value: 值
@@ -70,7 +70,7 @@ class Convert:
         else:
             return value
 
-    def getReqData(self, casedata):
+    def convert(self, casedata):
         if isinstance(casedata, dict):
             for key in casedata:
                 casedata[key] = self.convert_value(casedata[key])
@@ -104,8 +104,8 @@ if __name__ == "__main__":
     global_param.ALL_PARAM['COMPLIST'] = {"data": {"asa": 1}}
 
     data = get_test_data('../TestCaseData/organizeManage.yml', "tests1")
-    a = Convert()
+    a = GetReqData()
     for casedata in data[1]:
-        reqData = a.getReqData(casedata[1]['data'])
+        reqData = a.convert(casedata[1]['data'])
         print(reqData)
         r = requests.post("https://www.baidu.com", data=reqData, verify=False)
