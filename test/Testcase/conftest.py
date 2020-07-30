@@ -81,6 +81,7 @@ def loginAdmin_session(env, request):
     try:
         r = base.sendRequest(url=url, methord='post', data=login_data)
         print("登录接口返回值:", r.json())
+        log.info("登录接口返回值:", r.json())
         assert r.json()['code'] == 200, '后台登录失败，本次测试无效'
     except Exception:
         raise

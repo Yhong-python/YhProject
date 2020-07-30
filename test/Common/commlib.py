@@ -11,7 +11,7 @@ import json
 import requests
 import jsonpath
 from ruamel import yaml
-
+from pymysql.err import ProgrammingError
 from test.Common import global_param
 from test.Common.Log import Log
 
@@ -83,6 +83,7 @@ class GetReqData:
             raise TypeError("传入的数据类型必须为dict,当前传入的数据类型为{}".format(type(casedata)))
 
 def assertResult(expected,apiResult):
+    #对excepted中的response部分进行结果校验
     if isinstance(expected,dict):#判断yml中的expected是否为字段格式，不符合时直接抛异常
         expected_response=expected.get('response',None)
         if expected_response:#判断yml中的expected中是否存在response
@@ -129,33 +130,41 @@ def assertResult(expected,apiResult):
     else:
         raise ValueError("请检查yml文件中该用例的excepted字段是否符合dict规则")
 
+def getSqlData(db_connect,expected):
+    if isinstance(expected,dict):
+        if "verifty" in expected:
+            if "sql" in expected.get("verifty",None):
+                sql=expected["verifty"]["sql"]
+                if isinstance(sql,str):
+                    sqlResult=[]
+                    try:
+                        for sqlstr in sql.split(";"):
+                            if sqlstr:
+                                db_connect.excute(sqlstr)
+                                result=db_connect.get_all()
+                                sqlResult.append(result)
+                    except ProgrammingError as e:
+                        log.error("执行sql语句异常，异常语句为{}".format(sqlstr))
+                        log.exception(e)
+                    else:
+                        return sqlResult
+                else:
+                    raise ValueError("sql语句必须为str类型")
+            else:
+                log.error("请检查expected['verifty']中是否存在sql及对应的值")
+                raise KeyError("请检查expected['verifty']中是否存在sql及对应的值")
+        else:
+            log.error("请检查expected中是否存在verifty及对应的值")
+            raise KeyError("请检查expected中是否存在verifty及对应的值")
+
 if __name__ == "__main__":
-    data = get_test_data('../TestCaseData/organizeManage.yml', 'test2')
-    print(data)
-    #读取sql字段
-    # for i in data[1]:
-    #     # print(i[2])
-    #     jsonpathresult=jsonpath.jsonpath(i[2], "$.verifty.sql")
-    #     if jsonpathresult:
-    #         print(jsonpathresult)
-
-    #     if i[2].get("verifty",None):
-    #         if  i[2].get("verifty").get("sql"):
-    #             print(i[2].get("verifty").get("sql").split(';'))
-
-
-
-    # jsonpath.jsonpath(response, key)[0])
-        # if j['response'].get("verifty",None):
-            #     print(j['response'].get("verifty",None))
-
-    # print(data[1])
-
     global_param.ALL_PARAM['COMPLIST'] = {"data": {"asa": 1}}
-
-    data = get_test_data('../TestCaseData/organizeManage.yml', "tests1")
-    a = GetReqData()
-    for casedata in data[1]:
-        reqData = a.convert(casedata[1]['data'])
-        print(reqData)
-        r = requests.post("https://www.baidu.com", data=reqData, verify=False)
+    data = get_test_data('../TestCaseData/organizeManage.yml', "test2")
+    # print(data[1][0][2],type(data[1][0][2]))
+    # print(type(data[1][0][2]['verifty']))
+    # getSqlData(data[1][0][2])
+    # sql='SELECT 2 * FROM qp_itfin2.pms_de2artment WH2ERE `nam22e`="奇治信息总公司"'
+    # for casedata in data[1]:
+    #     reqData = a.convert(casedata[1]['data'])
+    #     print(reqData)
+    #     r = requests.post("https://www.baidu.com", data=reqData, verify=False)

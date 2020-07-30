@@ -14,7 +14,7 @@ import pytest
 from test.Common import global_param
 from test.Common.DB import DB_config
 from test.Common.Log import Log
-from test.Common.commlib import get_test_data,GetReqData,assertResult
+from test.Common.commlib import get_test_data,GetReqData,assertResult,getSqlData
 
 warnings.simplefilter("ignore", ResourceWarning)
 
@@ -25,9 +25,10 @@ class TestOrganizationManage:
     log = Log().getlog()
     db = DB_config()
     data = get_test_data('../TestCaseData/organizeManage.yml', "tests1")
-
+    data2=get_test_data('../TestCaseData/organizeManage.yml', "test2")
     def setup_class(self):
         global_param.ALL_PARAM['CURRENTPAGE']=1
+        global_param.ALL_PARAM['COMPANY_LIST']=1
 
     @allure.severity("normal")
     @pytest.mark.parametrize("case,http,expected", data[1], ids=data[0])
@@ -35,11 +36,24 @@ class TestOrganizationManage:
     @allure.title("{case}")
     def test_getCompanyList(self, env, loginAdmin_session, case, http, expected):
         self.log.info("用例名称：{}".format(case))
-        httpmethod = http['method']
         url = env['adminurl'] + http['path']
-        headers = http['headers']
         reqData = GetReqData().convert(http['data'])
-        r = loginAdmin_session.sendRequest(url=url, methord=httpmethod, headers=headers, data=reqData)
+        r = loginAdmin_session.sendRequest(url=url, methord=http['method'], headers=http['headers'], data=reqData)
         response = r.json()
         assertResult(expected,response)
+        # print(expected)
 
+    # @allure.severity("normal")
+    # @pytest.mark.parametrize("case,http,expected", data2[1], ids=data2[0])
+    # @allure.story("XX用例集合")
+    # @allure.title("{case}")
+    # def test_getCompanyList(self, env,db_connect, loginAdmin_session, case, http, expected):
+    #     self.log.info("用例名称：{}".format(case))
+    #     url = env['adminurl'] + http['path']
+    #     reqData = GetReqData().convert(http['data'])
+    #     r = loginAdmin_session.sendRequest(url=url, methord=http['method'], headers=http['headers'], data=reqData)
+    #     response = r.json()
+    #     assertResult(expected,response)
+    #     dbResult=getSqlData(db_connect,expected)
+    #     for i in dbResult:
+    #         print(i)

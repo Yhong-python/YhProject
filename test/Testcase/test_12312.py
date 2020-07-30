@@ -21,7 +21,6 @@ from test.Conf.Config import Config
 
 warnings.simplefilter("ignore", ResourceWarning)
 
-
 @allure.epic('账号管理')
 @allure.feature("组织机构管理")
 class TestOrganizationManage2:

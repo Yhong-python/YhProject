@@ -95,8 +95,8 @@ if __name__ == "__main__":
     a = DB_config()
     # sql = "SELECT opi.processKey,opi.bankId,pd.id pmsbankid FROM qp_itfin2_data_%d.ovf_process_info opi LEFT JOIN " \
     #       "qp_itfin2.pms_department pd on opi.bankId=pd.id WHERE processKey = '%s'" % (134, 'chengduyushangjianhang')
-    sql="SELECT * FROM qp_itfin2.pms_user"
-
+    # sql="SELECT * FROM qp_itfin2.pms_user"
+    sql=r"SELECT * FROM qp_itfin2.pms_department"
     a.excute(sql)
-    data = a.get_one()
+    data = a.get_all()
     print(data)

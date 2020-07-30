@@ -41,16 +41,12 @@ test2:
       headers:
         User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36
       data:
-        getdata: $COMPANY_LIST$
         currentPage: 1
         pageSize: 10
-        search: {"name":"dfghdf","list":[1,2,3,4,5]}
         search2: '{"name":""}'
-
     expected:
       response:
         code: 200
-        #校验部分返回值，只校验返回的第一个数据
-        part_verify:
-          id: 1
-          name: 奇治信息总公司
+      verifty:
+        sa: 123
+        sql: SELECT * FROM qp_itfin2.pms_department;SELECT * from qp_itfin2_data_532.ovf_process_info;
