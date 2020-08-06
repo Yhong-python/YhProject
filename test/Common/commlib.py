@@ -139,7 +139,7 @@ def getSqlData(db_connect,expected):
                     sqlResult=[]
                     try:
                         for sqlstr in sql.split(";"):
-                            if sqlstr:
+                            if sqlstr:#切割后有数据的才执行语句
                                 db_connect.excute(sqlstr)
                                 result=db_connect.get_all()
                                 sqlResult.append(result)
