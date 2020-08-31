@@ -118,4 +118,4 @@ if __name__ == "__main__":
     a.excute(sql)
     # data = a.get_all()
     # print(data)
-    print(a.get_sqlResultDic())
+    # print(a.get_sqlResultDic())
