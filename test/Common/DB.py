@@ -82,6 +82,8 @@ class DB_config:
             print('执行SQL语句失败', e)
 
     def get_all(self):
+        desc = self.cur.description
+        print(desc)
         return self.cur.fetchall()
 
     def get_one(self):
@@ -90,6 +92,22 @@ class DB_config:
     def close(self):
         return self.con.close()
 
+    def get_sqlResultDic(self):
+        """
+        组装sql语句结果成一个字典返回
+        :return:
+        """
+        desc = self.cur.description
+        keyList = []
+        for key in desc:
+            keyList.append(key[0])
+        results = self.cur.fetchall()
+        resultDic = []
+        if results and results != ():
+            for result in results:
+                data = dict(zip(keyList, result))
+                resultDic.append(data)
+        return resultDic
 
 if __name__ == "__main__":
     a = DB_config()
@@ -98,5 +116,6 @@ if __name__ == "__main__":
     # sql="SELECT * FROM qp_itfin2.pms_user"
     sql=r"SELECT * FROM qp_itfin2.pms_department"
     a.excute(sql)
-    data = a.get_all()
-    print(data)
+    # data = a.get_all()
+    # print(data)
+    print(a.get_sqlResultDic())
