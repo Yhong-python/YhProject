@@ -16,7 +16,7 @@ import os
 # sys.path.append('D:/ApiAuto/Apiautomation')
 # curPath = os.path.abspath(os.path.dirname(__file__))
 # BasePath = curPath[:curPath.find("Apiautomation\\") + len("Apiautomation\\")]
-#1111#
+#1111
 # log_path是存放日志的路径
 cur_path = os.path.dirname(__file__)
 BasePath = os.path.join(os.path.dirname(cur_path), 'Log')
