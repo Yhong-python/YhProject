@@ -18,6 +18,16 @@ from test.Common.base import Base
 log = Log().getlog()
 
 
+#钩子函数，用于用例执行时，打印用例名称到log
+@pytest.hookimpl(hookwrapper=True, tryfirst=True)
+def pytest_runtest_makereport():
+    outcome=yield
+    call_info=outcome.get_result()
+    if call_info.when=='setup':
+        print(call_info.nodeid)
+        log.info("当前运行的用例为:{}".format(call_info.nodeid.split("::")[-1]))
+
+
 def pytest_addoption(parser):
     parser.addoption("--env",
                      action="store",
