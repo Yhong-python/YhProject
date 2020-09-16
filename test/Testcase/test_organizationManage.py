@@ -40,7 +40,7 @@ class TestOrganizationManage:
         reqData = GetReqData().convert(http['data'])
         r = loginAdmin_session.sendRequest(url=url, methord=http['method'], headers=http['headers'], data=reqData)
         response = r.json()
-        assertResult(expected,response)
+        assert assertResult(expected,response)
         # print(expected)
 
     # @allure.severity("normal")

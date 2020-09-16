@@ -11,6 +11,7 @@ import json
 import requests
 import jsonpath
 from ruamel import yaml
+from dictdiffer import diff
 from pymysql.err import ProgrammingError
 from test.Common import global_param
 from test.Common.Log import Log
@@ -60,8 +61,8 @@ class GetReqData:
                         else:
                             return json.dumps(value)
                     else:
-                        log.error("在global_param.ALL_PARAM保存的全局变量中未找到该key:{}对应的非空数值".format(global_key))
-                        raise ValueError("在global_param.ALL_PARAM保存的全局变量中未找到该key:{}对应的非空数值".format(global_key))
+                        log.error("在global_param.ALL_PARAM保存的全局变量中未找到该key:{}对应的非None数值".format(global_key))
+                        raise ValueError("在global_param.ALL_PARAM保存的全局变量中未找到该key:{}对应的非None数值".format(global_key))
                 else:
                     log.error("引用全局变量失败，请检查：{}的格式是否符合要求。正确格式例子：$KEY_NAME$".format(value))
                     raise KeyError("引用全局变量失败，请检查：{}的格式是否符合要求。正确格式例子：$KEY_NAME$".format(value))
@@ -84,7 +85,7 @@ class GetReqData:
 
 def assertResult(expected,apiResult):
     #对excepted中的response部分进行结果校验
-    if isinstance(expected,dict):#判断yml中的expected是否为字段格式，不符合时直接抛异常
+    if isinstance(expected,dict):#判断yml中的expected是否为字典格式，不符合时直接抛异常
         expected_response=expected.get('response',None)
         if expected_response:#判断yml中的expected中是否存在response
             if isinstance(expected_response,dict):
@@ -96,18 +97,22 @@ def assertResult(expected,apiResult):
                                 try:
                                     assert expected_response[key] == jsonpathResult[0],"单一字段值单项数据预期结果与实际结果不匹配"
                                     log.info("jsonpath：{}单一字段校验成功。预期返回:{},接口返回值jsonpath匹配返回：{}".format(key,expected_response[key],jsonpathResult[0]))
-                                except Exception as e:
+                                except AssertionError:
                                     log.error("jsonpath：{}单一字段校验失败。预期返回:{},接口返回值jsonpath匹配返回：{}".format(key,expected_response[key],jsonpathResult[0]))
+                                    return False
+                                except Exception as e:
                                     log.exception(e)
-                                    raise
+                                    return False
                             elif len(jsonpathResult)>1 or len(jsonpathResult)==0:#列表格式的多数据校验,如[{}]在列表中存在的所有X字段进行校验
                                 try:
                                     assert expected_response[key] == jsonpathResult(apiResult,key),"单一字段值多数据预期结果与实际结果不匹配"
                                     log.info("jsonpath：{}单一字段多数据校验成功。预期返回:{},接口返回值jsonpath匹配返回：{}".format(key,expected_response[key],jsonpathResult))
-                                except Exception as e:
+                                except AssertionError:
                                     log.error("jsonpath：{}单一字段多数据校验失败。预期返回:{},接口返回值jsonpath匹配返回：{}".format(key,expected_response[key],jsonpathResult))
+                                    return False
+                                except Exception as e:
                                     log.exception(e)
-                                    raise
+                                    return False
                             else:
                                 log.error("{}的jsonpath值进行校验时出现未知异常".format(key))
                                 raise Exception("{}的jsonpath值进行校验时出现未知异常".format(key))
@@ -115,20 +120,34 @@ def assertResult(expected,apiResult):
                             log.error("jsonpath匹配失败：{}的匹配数据为{}".format(key,jsonpathResult))
                             raise ValueError("jsonpath匹配失败：{}的匹配数据为{}".format(key,jsonpathResult))
                     else:#否则直接用key-value进行校验
-                        if apiResult.get(key,None):
+                        if isinstance(expected_response[key],dict): #如果是字典类型的就进行字典字段比较
+                            dict_diff_result=diff(expected_response[key],apiResult[key])
+                            result=list(dict_diff_result)
+                            try:
+                                assert result==[] #如果结果为[]则表示字典里的数据相同
+                                log.info("预期返回值{0}：{1}与接口返回值{0}：{2}匹配成功".format(key,expected_response[key],apiResult[key]))
+                            except AssertionError:
+                                log.error("预期返回值{0}：{1}与接口返回值{0}：{2}不匹配".format(key,expected_response[key],apiResult[key]))
+                                log.error("具体的不匹配的字段为{}".format(result))
+                                return False
+                            except Exception as e:
+                                log.exception(e)
+                                return False
+                        else:
                             try:
                                 assert expected_response[key] == apiResult[key]
                                 log.info("预期返回值{0}：{1}与接口返回值{0}：{2}匹配成功".format(key,expected_response[key],apiResult[key]))
-                            except Exception as e:
+                            except AssertionError:
                                 log.error("预期返回值{0}：{1}与接口返回值{0}：{2}不匹配".format(key,expected_response[key],apiResult[key]))
-                                raise
-                        else:
-                            log.error("返回返回值中不存在该key:{}".format(key))
-                            raise KeyError("返回返回值中不存在该key:{}".format(key))
+                                return False
+                            except Exception as e:
+                                log.exception(e)
+                                return False
         else:
             raise KeyError("请检查yml文件中该用例的excepted中是否存在response对应的数据")
     else:
         raise ValueError("请检查yml文件中该用例的excepted字段是否符合dict规则")
+    return True
 
 def getSqlData(db_connect,expected):
     if isinstance(expected,dict):
