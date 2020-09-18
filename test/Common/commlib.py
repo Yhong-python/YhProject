@@ -8,16 +8,16 @@
 '''
 import json
 
-import requests
 import jsonpath
-from ruamel import yaml
 from dictdiffer import diff
 from pymysql.err import ProgrammingError
+from ruamel import yaml
+
 from test.Common import global_param
 from test.Common.Log import Log
 
-log = Log().getlog()
-
+log = Log()
+log = log.getlog()
 def get_test_data(test_data_path, test_node):
     case = []  # 存储测试用例名称
     http = []  # 存储请求对象
@@ -133,7 +133,7 @@ def assertResult(expected,apiResult):
                             except Exception as e:
                                 log.exception(e)
                                 return False
-                        else:
+                        else:  # 如果不是字典类型的就直接进行值的比较
                             try:
                                 assert expected_response[key] == apiResult[key]
                                 log.info("预期返回值{0}：{1}与接口返回值{0}：{2}匹配成功".format(key,expected_response[key],apiResult[key]))
@@ -159,12 +159,17 @@ def getSqlData(db_connect,expected):
                     try:
                         for sqlstr in sql.split(";"):
                             if sqlstr:#切割后有数据的才执行语句
+                                log.info("执行sql语句为:{}".format(sqlstr))
                                 db_connect.excute(sqlstr)
                                 result=db_connect.get_all()
                                 sqlResult.append(result)
                     except ProgrammingError as e:
                         log.error("执行sql语句异常，异常语句为{}".format(sqlstr))
                         log.exception(e)
+                        raise
+                    except Exception as e:
+                        log.exception(e)
+                        raise
                     else:
                         return sqlResult
                 else:

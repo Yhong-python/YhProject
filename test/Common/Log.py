@@ -10,6 +10,8 @@ import logging
 import os
 import time
 
+from test.Common.utils import Singleclass
+
 # log_path是存放日志的路径
 cur_path = os.path.dirname(__file__)
 log_path = os.path.join(os.path.dirname(cur_path), 'Log')
@@ -17,7 +19,17 @@ log_path = os.path.join(os.path.dirname(cur_path), 'Log')
 if not os.path.exists(log_path): os.mkdir(log_path)
 
 
+@Singleclass
 class Log:
+    # 只能创建一个实例对象，避免资源浪费
+    # __instance = None
+    #
+    # def __new__(cls, *args, **kwargs):
+    #     if cls.__instance is None:
+    #         cls.__instance = object.__new__(cls)
+    #         return cls.__instance
+    #     else:
+    #         return cls.__instance
     def __init__(self, logger=None):
         # 文件的命名
         self.logname = os.path.join(log_path, '%s.log' % (time.strftime('%Y%m%d')))  # 全部日志文件名
@@ -71,7 +83,21 @@ class Log:
 
 
 if __name__ == "__main__":
-    log = Log().getlog()
-    log.info('--测试开始--')
-    log.info('操作步骤1,2,3')
-    log.warning('----测试结束----')
+    log1 = Log()
+    print(id(log1))
+    # log = log1.getlog()
+    # log.info('--测试开始--')
+    # log.info('操作步骤1,2,3')
+    # log.warning('----测试结束----')
+    # log2 = Log()
+    # print(id(log2))
+    # print(log1 is log2)
+
+    log2 = Log()
+    print(id(log2))
+    # log.info('--测试开始--')
+    # log.info('操作步骤1,2,3')
+    # log.warning('----测试结束----')
+    # log2 = Log().getlog()
+    # print(id(log2))
+    # print(log1 is log2)

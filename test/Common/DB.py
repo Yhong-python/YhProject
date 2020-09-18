@@ -9,6 +9,7 @@
 import pymysql
 
 from test.Common.Log import Log
+from test.Common.utils import Singleclass
 from test.Conf.Config import Config
 
 cfg = Config()
@@ -18,11 +19,12 @@ user = cfg.dbuser
 passwd = cfg.dbpwd
 dbname = cfg.dbname
 
-
+log = Log()
+log = log.getlog()
 # print(host,port,user,passwd,dbname)
 # log = Log().getlog()
 
-
+@Singleclass
 class DB_config:
     def __init__(self, host=host, port=int(port), user=user, passwd=passwd, db=dbname):
         self.log = Log().getlog()
@@ -114,8 +116,8 @@ if __name__ == "__main__":
     # sql = "SELECT opi.processKey,opi.bankId,pd.id pmsbankid FROM qp_itfin2_data_%d.ovf_process_info opi LEFT JOIN " \
     #       "qp_itfin2.pms_department pd on opi.bankId=pd.id WHERE processKey = '%s'" % (134, 'chengduyushangjianhang')
     # sql="SELECT * FROM qp_itfin2.pms_user"
-    sql=r"SELECT * FROM qp_itfin2.pms_department"
-    a.excute(sql)
+    # sql=r"SELECT * FROM qp_itfin2.pms_department"
+    # a.excute(sql)
     # data = a.get_all()
     # print(data)
-    print(a.get_sqlResultDic())
+    # print(a.get_sqlResultDic())

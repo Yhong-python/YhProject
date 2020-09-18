@@ -6,25 +6,26 @@
 @time: 2020/5/8 10:18
 @desc:账号管理-组织机构管理
 '''
-import json
-import time
 import warnings
-import jsonpath
+
 import allure
+import jsonpath
 import pytest
-from test.Common import global_param
+
 from test.Common.DB import DB_config
-from test.Common.Login import loginAdmin
 from test.Common.Log import Log
-from test.Conf.Config import Config
+from test.Common.Login import loginAdmin
 from test.Common.commlib import get_test_data
+from test.Conf.Config import Config
+
 warnings.simplefilter("ignore", ResourceWarning)
 
 
 @allure.epic('账号管理')
 @allure.feature("组织机构管理")
 class TestOrganizationManage:
-    log = Log().getlog()
+    log = Log()
+    log = log.getlog()
     db = DB_config()
     # test = Assertions()
     data=get_test_data('../TestCaseData/organizeManage.yml',"tests1")

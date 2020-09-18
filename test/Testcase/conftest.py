@@ -15,8 +15,8 @@ from test.Common.DB import DB_config
 from test.Common.Log import Log
 from test.Common.base import Base
 
-log = Log().getlog()
-
+log = Log()
+log = log.getlog()
 
 #钩子函数，用于用例执行时，打印用例名称到log
 @pytest.hookimpl(hookwrapper=True, tryfirst=True)
