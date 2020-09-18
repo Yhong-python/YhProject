@@ -24,7 +24,8 @@ warnings.simplefilter("ignore", ResourceWarning)
 @allure.epic('账号管理')
 @allure.feature("组织机构管理")
 class TestOrganizationManage2:
-    log = Log().getlog()
+    log = Log()
+    log = log.getlog()
     db = DB_config()
     data = get_test_data('../TestCaseData/organizeManage.yml', "tests1")
     caseids = data[0]

@@ -11,8 +11,8 @@ import requests
 from test.Common.Log import Log
 from test.Conf.Config import Config
 
-log = Log().getlog()
-
+log = Log()
+log = log.getlog()
 
 class Base:
     def __init__(self):

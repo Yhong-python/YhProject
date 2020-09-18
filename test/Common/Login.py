@@ -6,12 +6,12 @@
 @time: 2020/5/11 10:33
 @desc: 前后台的登录封装
 '''
+from test.Common.Log import Log
 from test.Common.base import Base
 from test.Conf.Config import Config
-from test.Common.Log import Log
-import os
-import sys
-log=Log().getlog()
+
+log = Log()
+log = log.getlog()
 def loginAdmin(usr=None, pwd=None):
     """
     后台登录
@@ -19,7 +19,7 @@ def loginAdmin(usr=None, pwd=None):
     :param pwd:
     :return: 返回登录后的session
     """
-    print(sys.argv)
+    # print(sys.argv)
     base = Base()
     base.server_ip = Config().adminurl
     login_api = '/adminApi/admin/sys/login'

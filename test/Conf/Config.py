@@ -11,10 +11,13 @@ import configparser
 import os
 
 from test.Common.Log import Log
+from test.Common.utils import Singleclass
 
-log = Log().getlog()
+log = Log()
+log = log.getlog()
 
 
+@Singleclass
 class Config:
     # titles:
     TITLE_ENVIRONMENT = "environment"
@@ -41,12 +44,13 @@ class Config:
 
     # path
     path_dir = str(os.path.abspath(os.path.join(os.path.dirname(__file__), os.pardir)))
+    config = configparser.RawConfigParser()
 
     def __init__(self):
         """
         初始化
         """
-        self.config = configparser.RawConfigParser()
+        # self.config = configparser.RawConfigParser()
         self.log = log
         self.conf_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'config.ini')
 
@@ -54,31 +58,31 @@ class Config:
             raise FileNotFoundError("请确保配置文件config.ini存在！")
 
         self.config.read(self.conf_path)
-        self.environment_switch = self.get_conf(Config.TITLE_ENVIRONMENT, Config.VALUE_SWITCH)
+        self.environment_switch = self.get_conf(self.TITLE_ENVIRONMENT, self.VALUE_SWITCH)
         if self.environment_switch == str(0):
-            self.adminurl = self.get_conf(Config.TITLE_TEST, Config.VALUE_ADMINURL)
-            self.dbhost = self.get_conf(Config.TITLE_TEST, Config.VALUE_DBHOST)
-            self.dbport = self.get_conf(Config.TITLE_TEST, Config.VALUE_DBPORT)
-            self.dbuser = self.get_conf(Config.TITLE_TEST, Config.VALUE_DBUSER)
-            self.dbpwd = self.get_conf(Config.TITLE_TEST, Config.VALUE_DBPWD)
-            self.dbname = self.get_conf(Config.TITLE_TEST, Config.VALUE_DBNAME)
-            self.adminuser = self.get_conf(Config.TITLE_TEST, Config.VALUE_ADMINUSER)
-            self.adminpwd = self.get_conf(Config.TITLE_TEST, Config.VALUE_ADMINPWD)
-            self.weburl = self.get_conf(Config.TITLE_TEST, Config.VALUE_WEBURL)
-            self.webuser = self.get_conf(Config.TITLE_TEST, Config.VALUE_WEBUSER)
-            self.webpwd = self.get_conf(Config.TITLE_TEST, Config.VALUE_WEBPWD)
+            self.adminurl = self.get_conf(self.TITLE_TEST, self.VALUE_ADMINURL)
+            self.dbhost = self.get_conf(self.TITLE_TEST, self.VALUE_DBHOST)
+            self.dbport = self.get_conf(self.TITLE_TEST, self.VALUE_DBPORT)
+            self.dbuser = self.get_conf(self.TITLE_TEST, self.VALUE_DBUSER)
+            self.dbpwd = self.get_conf(self.TITLE_TEST, self.VALUE_DBPWD)
+            self.dbname = self.get_conf(self.TITLE_TEST, self.VALUE_DBNAME)
+            self.adminuser = self.get_conf(self.TITLE_TEST, self.VALUE_ADMINUSER)
+            self.adminpwd = self.get_conf(self.TITLE_TEST, self.VALUE_ADMINPWD)
+            self.weburl = self.get_conf(self.TITLE_TEST, self.VALUE_WEBURL)
+            self.webuser = self.get_conf(self.TITLE_TEST, self.VALUE_WEBUSER)
+            self.webpwd = self.get_conf(self.TITLE_TEST, self.VALUE_WEBPWD)
 
         elif self.environment_switch == str(1):
-            self.adminurl = self.get_conf(Config.TITLE_PRE, Config.VALUE_ADMINURL)
-            self.dbhost = self.get_conf(Config.TITLE_PRE, Config.VALUE_DBHOST)
-            self.dbport = self.get_conf(Config.TITLE_PRE, Config.VALUE_DBPORT)
-            self.dbuser = self.get_conf(Config.TITLE_PRE, Config.VALUE_DBUSER)
-            self.dbpwd = self.get_conf(Config.TITLE_PRE, Config.VALUE_DBPWD)
-            self.dbname = self.get_conf(Config.TITLE_PRE, Config.VALUE_DBNAME)
-            self.adminuser = self.get_conf(Config.TITLE_PRE, Config.VALUE_ADMINUSER)
-            self.adminpwd = self.get_conf(Config.TITLE_PRE, Config.VALUE_ADMINPWD)
-            self.weburl = self.get_conf(Config.TITLE_PRE, Config.VALUE_WEBUSER)
-            self.webpwd = self.get_conf(Config.TITLE_PRE, Config.VALUE_WEBPWD)
+            self.adminurl = self.get_conf(self.TITLE_PRE, self.VALUE_ADMINURL)
+            self.dbhost = self.get_conf(self.TITLE_PRE, self.VALUE_DBHOST)
+            self.dbport = self.get_conf(self.TITLE_PRE, self.VALUE_DBPORT)
+            self.dbuser = self.get_conf(self.TITLE_PRE, self.VALUE_DBUSER)
+            self.dbpwd = self.get_conf(self.TITLE_PRE, self.VALUE_DBPWD)
+            self.dbname = self.get_conf(self.TITLE_PRE, self.VALUE_DBNAME)
+            self.adminuser = self.get_conf(self.TITLE_PRE, self.VALUE_ADMINUSER)
+            self.adminpwd = self.get_conf(self.TITLE_PRE, self.VALUE_ADMINPWD)
+            self.weburl = self.get_conf(self.TITLE_PRE, self.VALUE_WEBUSER)
+            self.webpwd = self.get_conf(self.TITLE_PRE, self.VALUE_WEBPWD)
 
     def get_conf(self, section, name):
         """
@@ -113,7 +117,10 @@ class Config:
 
 
 if __name__ == "__main__":
-    Config()
+    a = Config()
+    print(id(a))
+    b = Config()
+    print(id(b))
     # print(Config().adminurl)
     # Config().set_conf('test','name','123')
     # Config().add_conf('pre')

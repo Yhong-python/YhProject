@@ -7,15 +7,13 @@
 @desc:
 '''
 
-
 import json
-from test.Common import global_param
+
 from test.Common.Log import Log
 from test.Common.commlib import get_test_data
-import jsonpath
 
-log = Log().getlog()
-
+log = Log()
+log = log.getlog()
 
 
 
