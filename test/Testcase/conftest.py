@@ -34,7 +34,16 @@ def pytest_addoption(parser):
                      dest="environment",
                      default="test",
                      help="environment: test or prod")
+    parser.addoption(
+        "--cmdopt", action="store", default="test", help="my option: type1 or type2"
+    )
+    parser.addini('url', type=None, default="http://www.baidu.com", help='添加 url 访问地址参数')
 
+@pytest.fixture(scope="session")
+def home_url(pytestconfig):
+    url = pytestconfig.getini('url')
+    print("\n读取到配置文件的url地址：%s" % url)
+    return url
 
 # 配置文件读取的前置操作
 @pytest.fixture(scope='session')
@@ -117,3 +126,4 @@ def db_connect(env):
         db = DB_config(host=host, port=port, user=user, passwd=pwd, db=dbname)
         yield db
         db.close()
+
